@@ -1,0 +1,64 @@
+hiii hello
+Here’s a concise summary of OpenSSL commands by functionality:
+
+Key and Certificate Management
+Generate a private key: openssl genpkey -algorithm RSA -out private_key.pem
+Extract public key: openssl rsa -pubout -in private_key.pem -out public_key.pem
+Generate self-signed certificate: openssl req -new -x509 -key private_key.pem -out certificate.pem
+Create a CSR: openssl req -new -key private_key.pem -out request.csr
+Verify a CSR: openssl req -text -noout -verify -in request.csr
+Encryption and Decryption
+Encrypt a file (AES): openssl enc -aes-256-cbc -salt -in plaintext.txt -out encrypted.txt
+Decrypt a file (AES): openssl enc -aes-256-cbc -d -in encrypted.txt -out decrypted.txt
+Encrypt (RSA): openssl rsautl -encrypt -inkey public_key.pem -pubin -in plaintext.txt -out encrypted.bin
+Decrypt (RSA): openssl rsautl -decrypt -inkey private_key.pem -in encrypted.bin -out decrypted.txt
+Hashing
+Generate SHA256 hash: openssl dgst -sha256 plaintext.txt
+Verify a hash: openssl dgst -sha256 -verify public_key.pem -signature signature.bin plaintext.txt
+Display and Convert
+View certificate details: openssl x509 -in certificate.pem -text -noout
+Convert PEM to DER: openssl x509 -in certificate.pem -outform DER -out certificate.der
+Convert DER to PEM: openssl x509 -in certificate.der -inform DER -out certificate.pem
+Convert private key to PKCS#8: openssl pkcs8 -topk8 -in private_key.pem -out private_key_pkcs8.pem
+Verification
+Test SSL connection: openssl s_client -connect example.com:443
+Verify private key: openssl rsa -check -in private_key.pem
+Verify certificate: openssl verify -CAfile ca_certificate.pem certificate.pem
+
+
+
+
+
+
+def modular_sqrt(a, p):
+    """Find a modular square root of a mod p, if it exists."""
+    if pow(a, (p - 1) // 2, p) != 1:
+        return None  # No solution
+    if p % 4 == 3:
+        return pow(a, (p + 1) // 4, p)
+    raise NotImplementedError("General modular square root not implemented.")
+
+def generate_affine_points(a, b, p):
+    """Generate all affine points on the elliptic curve y^2 = x^3 + ax + b over F_p."""
+    points = []
+    for x in range(p):
+        rhs = (x**3 + a*x + b) % p  # Calculate RHS of the curve equation
+        y = modular_sqrt(rhs, p)
+        if y is not None:
+            points.append((x, y))  # Add (x, y)
+            if y != 0:
+                points.append((x, p - y))  # Add (x, -y mod p)
+    points.append("Infinity")  # Add the point at infinity
+    return points
+
+# Example parameters
+a = 2  # Coefficient of x
+b = 3  # Constant term
+p = 17  # Prime number for the field
+
+# Generate affine points
+affine_points = generate_affine_points(a, b, p)
+print(f"Affine points on the curve y^2 = x^3 + {a}x + {b} over F_{p}:")
+for point in affine_points:
+    print(point)
+

@@ -1,0 +1,18 @@
+openssl aes-128-cbc  -e  -in plain.txt -out c.bin -k "password" -nosalt   - aes encryption
+openssl aes-128-cbc  -d  -in c.bin -out plain.txt -k "password" -nosalt   - aes decryption
+
+openssl genrsa -out pvtkey.pem  - private key gen in rsa
+openssl rsa -pubout -in pvtkey.pem -out pubkey.pem - public` key gen in rsa
+
+openssl rsa -text -in pvtkey.pem  - private key in hexa
+
+openssl rsautl -encrypt -in plain.txt -pubin -inkey pubkey.pem -out c.bin - encryption in rsa
+openssl rsautl -decrypt -in c.bin -inkey pvtkey.pem -out plain.txt - decryption in rsa
+
+openssl md5 (or) SHA256 plain.txt  - gen hash
+
+openssl dgst -sha1 -sign pvtkey.pem -out s.bin plain.txt  - sign gen
+openssl dgst -sha1 -verify pubkey.pem -signature s.bin plain.txt  - verify gen
+
+certutil -dump c.bin
+type plain.txt
